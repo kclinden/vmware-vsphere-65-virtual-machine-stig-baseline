@@ -1,3 +1,5 @@
+input('virtual_machine')
+
 control "V-94563" do
   title "Copy operations must be disabled on the virtual machine."
   desc  "Copy and paste operations are disabled by default; however, by
@@ -57,12 +59,18 @@ server, run the following command:
 
 If the setting does not exist, run:
 
-Get-VM \"VM Name\" | New-AdvancedSetting -Name isolation.tools.copy.disable
--Value true
+Get-VM \"VM Name\" | New-AdvancedSetting -Name isolation.tools.copy.disable -Value true
 
 If the setting exists, run:
 
 Get-VM \"VM Name\" | Get-AdvancedSetting -Name isolation.tools.copy.disable |
 Set-AdvancedSetting -Value true"
+
+command = '(Get-VM vcsa | Get-AdvancedSetting -Name isolation.tools.copy.disable).value'
+
+describe powercli_command(command) do
+  its('stdout.strip') { should match "true" }
+end
+
 end
 
